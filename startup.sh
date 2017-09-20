@@ -31,7 +31,7 @@ function fn_usage() {
 }
 
 function fn_api() {
-    exec aptly api serve -listen=:${PORT}
+    exec aptly api serve -no-lock -listen=:${PORT}
     exit $?
 }
 
