@@ -10,14 +10,14 @@ if [ ! -f "${CONF_FILE}" ]; then
     exit 1
 fi
 
+filter_=""
+while read -r line; do
+    filter_=${filter_:+$filter_|}${line}
+done < $(dirname ${CONF_FILE})/filter.txt
+
 function fn_mirror() {
     echo "mirror config file: ${1}"
     source ${1}
-
-    filter_=""
-    while read -r line; do
-        filter_=${filter_:+$filter_|}${line}
-    done <<< "${filter}"
 
     # make sure gpg keys are present
     if [ -n "${keys}" ]; then
@@ -38,9 +38,9 @@ function fn_mirror() {
         -filter-with-deps=${filter_with_deps} \
         -filter=${filter_} \
         ${name}
-    
+
     # update repo
-    aptly -config=${CONF_FILE} mirror update ${name}    
+    aptly -config=${CONF_FILE} mirror update ${name}
 }
 
 echo "Updating all mirrors..."
